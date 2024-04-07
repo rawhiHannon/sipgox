@@ -755,6 +755,7 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 				if err := tx.Respond(res); err != nil {
 					log.Error().Err(err).Msg("Failed to send 486 Busy response")
 				}
+				mu.Unlock()
 				return
 			}
 		} else {
