@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/emiago/sipgo"
-	"github.com/emiago/sipgox"
+	"github.com/rawhiHannon/sipgox"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

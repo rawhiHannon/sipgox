@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/emiago/sipgox/sdp"
+	"github.com/rawhiHannon/sipgox/sdp"
 )
 
 func GetCurrentNTPTimestamp() uint64 {

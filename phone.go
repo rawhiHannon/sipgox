@@ -15,8 +15,8 @@ import (
 
 	"github.com/emiago/sipgo"
 	"github.com/emiago/sipgo/sip"
-	"github.com/emiago/sipgox/sdp"
 	"github.com/icholy/digest"
+	"github.com/rawhiHannon/sipgox/sdp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
