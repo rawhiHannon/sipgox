@@ -743,7 +743,12 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 
 	ds := sipgo.NewDialogServer(client, contactHdr)
 	var chal *digest.Challenge
+	var mu sync.RWMutex
+
 	server.OnInvite(func(req *sip.Request, tx sip.ServerTransaction) {
+		mu.Lock()
+		defer mu.Unlock()
+
 		if d != nil {
 			didAnswered, _ := sip.MakeDialogIDFromResponse(d.InviteResponse)
 			did, _ := sip.MakeDialogIDFromRequest(req)
@@ -1034,7 +1039,6 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 	})
 
 	server.OnAck(func(req *sip.Request, tx sip.ServerTransaction) {
-		fmt.Println("Recevied ack")
 		// This on 2xx
 		if d == nil {
 			if chal != nil {
