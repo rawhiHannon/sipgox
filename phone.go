@@ -612,6 +612,8 @@ type AnswerOptions struct {
 	// >0 different response
 	OnCall func(inviteRequest *sip.Request) int
 
+	ByeChan chan struct{}
+
 	// Default is 200 (answer a call)
 	AnswerCode   sip.StatusCode
 	AnswerReason string
@@ -659,6 +661,9 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 	var exitErr error
 	stopAnswer := sync.OnceFunc(func() {
 		cancel() // Cancel context
+		if opts.ByeChan != nil {
+			close(opts.ByeChan)
+		}
 		for _, l := range listeners {
 			log.Debug().Str("addr", l.Addr).Msg("Closing listener")
 			l.Close()
