@@ -760,7 +760,11 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 				}
 				return
 			}
-			log.Error().Msg("Received second INVITE is not yet supported")
+			log.Warn().Msg("Received second INVITE is not yet supported")
+			res := sip.NewResponseFromRequest(req, 486, "Busy Here", nil)
+			if err := tx.Respond(res); err != nil {
+				log.Error().Err(err).Msg("Failed to send 486 Busy Here response")
+			}
 			return
 		}
 
