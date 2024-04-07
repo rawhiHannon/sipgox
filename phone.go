@@ -1034,6 +1034,7 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 	})
 
 	server.OnAck(func(req *sip.Request, tx sip.ServerTransaction) {
+		fmt.Println("Recevied ack")
 		// This on 2xx
 		if d == nil {
 			if chal != nil {
