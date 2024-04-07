@@ -744,10 +744,26 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 	ds := sipgo.NewDialogServer(client, contactHdr)
 	var chal *digest.Challenge
 	var mu sync.RWMutex
+	inviteReceived := false
 
 	server.OnInvite(func(req *sip.Request, tx sip.ServerTransaction) {
 		mu.Lock()
-		defer mu.Unlock()
+		if inviteReceived == false {
+			inviteReceived = true
+			mu.Unlock()
+
+		} else {
+			if d == nil {
+				defer mu.Unlock()
+				log.Warn().Msg("concurrent INVITE is not supported")
+				res := sip.NewResponseFromRequest(req, 486, "Busy", nil)
+				if err := tx.Respond(res); err != nil {
+					log.Error().Err(err).Msg("Failed to send 486 Busy response")
+				}
+				return
+			}
+			mu.Unlock()
+		}
 
 		if d != nil {
 			log.Info().Msg("not first INVITE")
