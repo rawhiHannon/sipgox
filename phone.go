@@ -748,13 +748,8 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 
 	server.OnInvite(func(req *sip.Request, tx sip.ServerTransaction) {
 		mu.Lock()
-		if inviteReceived == false {
-			inviteReceived = true
-			mu.Unlock()
-
-		} else {
+		if inviteReceived == true {
 			if d == nil {
-				defer mu.Unlock()
 				log.Warn().Msg("concurrent INVITE is not supported")
 				res := sip.NewResponseFromRequest(req, 486, "Busy", nil)
 				if err := tx.Respond(res); err != nil {
@@ -762,8 +757,10 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 				}
 				return
 			}
-			mu.Unlock()
+		} else {
+			inviteReceived = true
 		}
+		mu.Unlock()
 
 		if d != nil {
 			log.Info().Msg("not first INVITE")
