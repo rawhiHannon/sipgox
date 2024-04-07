@@ -750,9 +750,12 @@ func (p *Phone) answer(ansCtx context.Context, opts AnswerOptions) (*DialogServe
 		defer mu.Unlock()
 
 		if d != nil {
+			log.Info().Msg("not first INVITE")
 			didAnswered, _ := sip.MakeDialogIDFromResponse(d.InviteResponse)
 			did, _ := sip.MakeDialogIDFromRequest(req)
 			if did == didAnswered {
+				log.Info().Msg("INVITE for update")
+
 				// We received INVITE for update
 				if err := d.MediaSession.UpdateDestinationSDP(req.Body()); err != nil {
 					res := sip.NewResponseFromRequest(req, 400, err.Error(), nil)
